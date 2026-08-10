@@ -29,6 +29,10 @@ describe('storage 数据层', () => {
     assert.deepEqual(d.settings.dashboardModules, ['media', 'campus', 'product', 'fitness', 'diet', 'game']);
   });
 
+  it('Node 环境中 isPersistent 返回 false（内存回退）', () => {
+    assert.equal(store.isPersistent(), false);
+  });
+
   it('save 后 load 能完整往返', () => {
     const d = store.load();
     d.notes.push({ id: 'n1', text: '测试', done: false, createdAt: 'x' });

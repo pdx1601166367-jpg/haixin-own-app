@@ -248,6 +248,12 @@
     if (dateEl) {
       dateEl.textContent = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }).format(new Date());
     }
+    const storageNote = getEl('sidebar-storage-note');
+    if (storageNote) {
+      storageNote.textContent = LifeApp.store.isPersistent()
+        ? '本地数据，无需联网'
+        : '当前浏览器无法本地保存，建议使用 Chrome/Edge';
+    }
     const searchBtn = getEl('global-search-btn');
     if (searchBtn) {
       searchBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>';

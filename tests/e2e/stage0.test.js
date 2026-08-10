@@ -61,5 +61,6 @@ describe('阶段 0：项目骨架与导航', () => {
     assert.match(APP_URL, /^file:\/\//);
     await freshApp(page);
     assert.equal(await page.title(), '工作生活专属 App');
+    assert.match(await page.locator('#sidebar-storage-note').textContent(), /本地数据|无法本地保存/);
   });
 });

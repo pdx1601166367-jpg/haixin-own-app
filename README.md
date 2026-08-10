@@ -15,6 +15,15 @@
 
 Windows 下双击 `启动.bat`，或者直接双击 `index.html`，用 Edge 或 Chrome 打开。
 
+macOS 下双击 `启动.command`。如果首次双击被系统拦截，在“系统设置 → 隐私与安全性”中允许运行，或在终端执行：
+
+```bash
+chmod +x 启动.command
+./启动.command
+```
+
+浏览器建议使用 Chrome 或 Edge。Safari 在 `file://` 下可能限制本地存储，如果打开后侧边栏底部提示“当前浏览器无法本地保存”，请改用 Chrome 或 Edge。
+
 ## 数据与备份
 
 - 数据保存在浏览器的 localStorage 中，删除浏览器站点数据会导致数据丢失
@@ -52,6 +61,7 @@ npm test
 ```text
 index.html          应用入口
 启动.bat            Windows 双击启动脚本
+启动.command        macOS 双击启动脚本
 css/                全局样式、设计系统、三套外观
 js/                 存储层、通用组件、视图
 assets/ambient/     流光外观使用的本地壁纸素材

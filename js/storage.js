@@ -11,16 +11,34 @@
   const STORAGE_KEY = 'lifeApp.data.v1';
   let memory = null;
   let data = null;
+  let backend = null;
+  let backendIsLocal = false;
 
   function getBackend() {
-    if (typeof localStorage !== 'undefined' && localStorage) {
-      return localStorage;
+    if (backend) return backend;
+    try {
+      if (typeof localStorage !== 'undefined' && localStorage) {
+        const probe = '__lifeapp_probe__';
+        localStorage.setItem(probe, '1');
+        localStorage.removeItem(probe);
+        backend = localStorage;
+        backendIsLocal = true;
+        return backend;
+      }
+    } catch (err) {
+      backendIsLocal = false;
     }
-    return {
+    backend = {
       getItem: function () { return memory; },
       setItem: function (key, value) { memory = String(value); },
       removeItem: function () { memory = null; }
     };
+    return backend;
+  }
+
+  function isPersistent() {
+    if (!backend) getBackend();
+    return backendIsLocal;
   }
 
   function createDefaultData() {
@@ -317,7 +335,8 @@
     moduleCounts: moduleCounts,
     getModuleSummary: getModuleSummary,
     searchData: searchData,
-    buildMonthDays: buildMonthDays
+    buildMonthDays: buildMonthDays,
+    isPersistent: isPersistent
   };
   Object.defineProperty(api, 'data', {
     get: function () {
