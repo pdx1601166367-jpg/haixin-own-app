@@ -1,0 +1,12 @@
+{
+  "name": "work-life-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地工作生活管理应用",
+  "scripts": {
+    "test": "node --test --test-concurrency=2 \"tests/**/*.test.js\""
+  },
+  "devDependencies": {
+    "playwright": "^1.62.0"
+  }
+}

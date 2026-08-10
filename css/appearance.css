@@ -1,0 +1,678 @@
+/* 三种界面外观：流光玻璃 / 笔记 / 硬边；每种支持浅色与深色主题。
+   外观只切换材质与色彩令牌，页面结构和数据完全不变。 */
+
+/* ============ 流光玻璃（默认） ============ */
+html[data-appearance="liquid"] {
+  --bg: #e8eef1;
+  --panel: rgba(255, 255, 255, 0.46);
+  --panel-soft: rgba(244, 248, 249, 0.38);
+  --border: rgba(45, 75, 88, 0.14);
+  --text: #222222;
+  --muted: #5f6d76;
+  --faint: #8a969e;
+  --accent: #34788d;
+  --accent-deep: #245f72;
+  --accent-soft: rgba(52, 120, 141, 0.13);
+  --success: #1f7a50;
+  --success-soft: rgba(47, 158, 99, 0.13);
+  --warning: #c96f14;
+  --warning-soft: rgba(232, 137, 12, 0.14);
+  --danger: #b6453f;
+  --danger-soft: rgba(214, 64, 69, 0.12);
+  --info: #3474b3;
+  --info-soft: rgba(52, 116, 179, 0.12);
+  --radius-card: 20px;
+  --radius-panel: 20px;
+  --radius-control: 12px;
+  --shadow-card: 0 18px 44px -20px rgba(31, 54, 62, 0.28), 0 6px 16px rgba(31, 54, 62, 0.06);
+  --shadow-soft: 0 8px 22px rgba(31, 54, 62, 0.1);
+}
+
+html[data-appearance="liquid"] body {
+  background: #eef1f2;
+}
+
+html[data-appearance="liquid"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: url("../assets/ambient/acrylic-cool.webp") center / cover no-repeat;
+  filter: saturate(0.3) brightness(1.14) blur(14px);
+  transform: scale(1.06);
+}
+
+html[data-appearance="liquid"][data-theme="dark"] {
+  --bg: #12191d;
+  --panel: rgba(28, 38, 43, 0.52);
+  --panel-soft: rgba(36, 47, 53, 0.4);
+  --border: rgba(185, 210, 220, 0.13);
+  --text: #edf3f5;
+  --muted: #9aaab2;
+  --faint: #72838b;
+  --accent: #67a9c7;
+  --accent-deep: #8cc5dc;
+  --accent-soft: rgba(103, 169, 199, 0.17);
+  --success: #69b98f;
+  --success-soft: rgba(105, 185, 143, 0.15);
+  --warning: #dda45b;
+  --warning-soft: rgba(221, 164, 91, 0.15);
+  --danger: #dd7b75;
+  --danger-soft: rgba(221, 123, 117, 0.15);
+  --info: #7ea9d2;
+  --info-soft: rgba(126, 169, 210, 0.16);
+  --shadow-card: 0 18px 44px -18px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+html[data-appearance="liquid"][data-theme="dark"] body {
+  background: #10171b;
+}
+
+html[data-appearance="liquid"][data-theme="dark"] body::before {
+  background: url("../assets/ambient/chromatic-polymer-dark-v1.webp") center / cover no-repeat;
+  filter: saturate(0.45) brightness(0.72) blur(16px);
+}
+
+html[data-appearance="liquid"] .sidebar,
+html[data-appearance="liquid"] .topbar {
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  border-color: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.62) inset, 0 16px 38px -18px rgba(31, 54, 62, 0.28);
+}
+
+html[data-appearance="liquid"] .sidebar {
+  margin: 14px 0 14px 14px;
+  height: calc(100vh - 28px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  position: sticky;
+  top: 14px;
+}
+
+html[data-appearance="liquid"] .topbar {
+  margin: 14px 22px 0;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  height: 60px;
+  position: sticky;
+  top: 14px;
+}
+
+html[data-appearance="liquid"][data-theme="dark"] .sidebar,
+html[data-appearance="liquid"][data-theme="dark"] .topbar {
+  background: rgba(22, 31, 36, 0.5);
+  border-color: rgba(185, 210, 220, 0.1);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+html[data-appearance="liquid"] .panel,
+html[data-appearance="liquid"] .stat-card,
+html[data-appearance="liquid"] .account-card,
+html[data-appearance="liquid"] .game-card,
+html[data-appearance="liquid"] .fitness-plan-card,
+html[data-appearance="liquid"] .campus-card,
+html[data-appearance="liquid"] .media-card,
+html[data-appearance="liquid"] .summary-card,
+html[data-appearance="liquid"] .project-item,
+html[data-appearance="liquid"] .search-result,
+html[data-appearance="liquid"] .attention-row,
+html[data-appearance="liquid"] .overview-strip,
+html[data-appearance="liquid"] .nutrition-metric,
+html[data-appearance="liquid"] .kanban-col,
+html[data-appearance="liquid"] .month-day,
+html[data-appearance="liquid"] .cal-day,
+html[data-appearance="liquid"] .tab-btn,
+html[data-appearance="liquid"] .segmented,
+html[data-appearance="liquid"] .swatch,
+html[data-appearance="liquid"] .kpi,
+html[data-appearance="liquid"] .chart-card,
+html[data-appearance="liquid"] .media-status-item,
+html[data-appearance="liquid"] .modal,
+html[data-appearance="liquid"] .toast {
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 14px 34px -18px rgba(31, 54, 62, 0.32);
+}
+
+html[data-appearance="liquid"][data-theme="dark"] .panel,
+html[data-appearance="liquid"][data-theme="dark"] .stat-card,
+html[data-appearance="liquid"][data-theme="dark"] .account-card,
+html[data-appearance="liquid"][data-theme="dark"] .game-card,
+html[data-appearance="liquid"][data-theme="dark"] .fitness-plan-card,
+html[data-appearance="liquid"][data-theme="dark"] .campus-card,
+html[data-appearance="liquid"][data-theme="dark"] .media-card,
+html[data-appearance="liquid"][data-theme="dark"] .summary-card,
+html[data-appearance="liquid"][data-theme="dark"] .project-item,
+html[data-appearance="liquid"][data-theme="dark"] .search-result,
+html[data-appearance="liquid"][data-theme="dark"] .attention-row,
+html[data-appearance="liquid"][data-theme="dark"] .overview-strip,
+html[data-appearance="liquid"][data-theme="dark"] .nutrition-metric,
+html[data-appearance="liquid"][data-theme="dark"] .kanban-col,
+html[data-appearance="liquid"][data-theme="dark"] .month-day,
+html[data-appearance="liquid"][data-theme="dark"] .cal-day,
+html[data-appearance="liquid"][data-theme="dark"] .tab-btn,
+html[data-appearance="liquid"][data-theme="dark"] .segmented,
+html[data-appearance="liquid"][data-theme="dark"] .swatch,
+html[data-appearance="liquid"][data-theme="dark"] .kpi,
+html[data-appearance="liquid"][data-theme="dark"] .chart-card,
+html[data-appearance="liquid"][data-theme="dark"] .media-status-item,
+html[data-appearance="liquid"][data-theme="dark"] .modal,
+html[data-appearance="liquid"][data-theme="dark"] .toast {
+  background: rgba(27, 37, 42, 0.58);
+  border-color: rgba(185, 210, 220, 0.11);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 16px 40px -20px rgba(0, 0, 0, 0.6);
+}
+
+html[data-appearance="liquid"] .nav-item.active {
+  background: rgba(52, 120, 141, 0.14);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+html[data-appearance="liquid"] .btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* 深色 2.5D 图标：深灰底、橙/灰蓝/灰白符号 */
+html[data-appearance="liquid"] .nav-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 2px 7px rgba(31, 54, 62, 0.14);
+  flex: 0 0 26px;
+}
+
+html[data-appearance="liquid"] .nav-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+html[data-appearance="liquid"] .nav-item.active .nav-icon {
+  background: rgba(240, 138, 60, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 7px rgba(201, 111, 44, 0.2);
+}
+
+html[data-appearance="liquid"] .nav-item:hover .nav-icon {
+  background: rgba(125, 147, 168, 0.22);
+}
+
+html[data-appearance="liquid"] .brand-mark,
+html[data-appearance="liquid"] .toolbar-module-icon,
+html[data-appearance="liquid"] .page-icon {
+  background: linear-gradient(145deg, #454c52, #252b30);
+  color: #eef1f3;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 4px 10px rgba(25, 32, 37, 0.32);
+}
+
+html[data-appearance="liquid"] .brand-mark {
+  background: linear-gradient(145deg, #454c52, #252b30);
+  color: #eef1f3;
+}
+
+/* ============ 笔记（Notion 风格） ============ */
+html[data-appearance="notebook"] {
+  --bg: #f7f6f2;
+  --panel: rgba(255, 255, 255, 0.78);
+  --panel-soft: rgba(241, 240, 236, 0.7);
+  --border: rgba(45, 44, 40, 0.12);
+  --text: #2f2f2b;
+  --muted: #6b6a64;
+  --faint: #9b9a93;
+  --accent: #222222;
+  --accent-deep: #000000;
+  --accent-soft: rgba(34, 34, 34, 0.07);
+  --success: #388058;
+  --success-soft: #edf3ec;
+  --warning: #d9730d;
+  --warning-soft: #fbf3db;
+  --danger: #d64045;
+  --danger-soft: #fdebec;
+  --info: #3474b3;
+  --info-soft: #e7f3f8;
+  --radius-card: 18px;
+  --radius-panel: 18px;
+  --radius-control: 10px;
+  --shadow-card: 0 6px 20px rgba(45, 44, 40, 0.08), 0 1px 2px rgba(45, 44, 40, 0.04);
+  --shadow-soft: 0 3px 10px rgba(45, 44, 40, 0.06);
+}
+
+html[data-appearance="notebook"] body {
+  background: #f7f6f2;
+}
+
+html[data-appearance="notebook"][data-theme="dark"] {
+  --bg: #191919;
+  --panel: rgba(31, 31, 31, 0.86);
+  --panel-soft: rgba(38, 38, 38, 0.72);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: rgba(255, 255, 255, 0.84);
+  --muted: rgba(255, 255, 255, 0.58);
+  --faint: rgba(255, 255, 255, 0.4);
+  --accent: #ffffff;
+  --accent-deep: #ffffff;
+  --accent-soft: rgba(255, 255, 255, 0.1);
+  --success: #73a88b;
+  --success-soft: #24473a;
+  --warning: #d6b45c;
+  --warning-soft: #564b27;
+  --danger: #e07b74;
+  --danger-soft: #5d2826;
+  --info: #69a6c8;
+  --info-soft: #25465a;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+html[data-appearance="notebook"] .sidebar {
+  background: rgba(247, 246, 242, 0.86);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  border-right: 1px solid #e5e4df;
+}
+
+html[data-appearance="notebook"] .topbar {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border-bottom: 1px solid #e5e4df;
+  backdrop-filter: none;
+  box-shadow: 0 1px 2px rgba(15, 15, 15, 0.03);
+}
+
+html[data-appearance="notebook"][data-theme="dark"] .sidebar {
+  background: #191919;
+  border-right-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-appearance="notebook"][data-theme="dark"] .topbar {
+  background: rgba(31, 31, 31, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+html[data-appearance="notebook"] .panel,
+html[data-appearance="notebook"] .stat-card,
+html[data-appearance="notebook"] .account-card,
+html[data-appearance="notebook"] .game-card,
+html[data-appearance="notebook"] .fitness-plan-card,
+html[data-appearance="notebook"] .campus-card,
+html[data-appearance="notebook"] .media-card,
+html[data-appearance="notebook"] .summary-card,
+html[data-appearance="notebook"] .project-item,
+html[data-appearance="notebook"] .search-result,
+html[data-appearance="notebook"] .attention-row,
+html[data-appearance="notebook"] .swatch,
+html[data-appearance="notebook"] .kpi,
+html[data-appearance="notebook"] .chart-card,
+html[data-appearance="notebook"] .media-status-item,
+html[data-appearance="notebook"] .modal,
+html[data-appearance="notebook"] .toast {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(45, 44, 40, 0.1);
+  box-shadow: 0 6px 20px rgba(45, 44, 40, 0.08);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+
+html[data-appearance="notebook"][data-theme="dark"] .panel,
+html[data-appearance="notebook"][data-theme="dark"] .stat-card,
+html[data-appearance="notebook"][data-theme="dark"] .account-card,
+html[data-appearance="notebook"][data-theme="dark"] .game-card,
+html[data-appearance="notebook"][data-theme="dark"] .fitness-plan-card,
+html[data-appearance="notebook"][data-theme="dark"] .campus-card,
+html[data-appearance="notebook"][data-theme="dark"] .media-card,
+html[data-appearance="notebook"][data-theme="dark"] .summary-card,
+html[data-appearance="notebook"][data-theme="dark"] .project-item,
+html[data-appearance="notebook"][data-theme="dark"] .search-result,
+html[data-appearance="notebook"][data-theme="dark"] .attention-row,
+html[data-appearance="notebook"][data-theme="dark"] .swatch,
+html[data-appearance="notebook"][data-theme="dark"] .kpi,
+html[data-appearance="notebook"][data-theme="dark"] .chart-card,
+html[data-appearance="notebook"][data-theme="dark"] .media-status-item,
+html[data-appearance="notebook"][data-theme="dark"] .modal,
+html[data-appearance="notebook"][data-theme="dark"] .toast {
+  background: rgba(31, 31, 31, 0.88);
+  border-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+}
+
+html[data-appearance="notebook"] .btn-primary {
+  background: #222222;
+  border-color: #222222;
+  color: #ffffff;
+}
+
+html[data-appearance="notebook"] .btn-primary:hover {
+  background: #000000;
+}
+
+html[data-appearance="notebook"] .btn:not(.btn-primary) {
+  background: #ffffff;
+  border-color: #dcdcd8;
+}
+
+html[data-appearance="notebook"][data-theme="dark"] .btn:not(.btn-primary) {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+html[data-appearance="notebook"] .nav-item.active {
+  background: rgba(34, 34, 34, 0.07);
+  color: #222222;
+}
+
+html[data-appearance="notebook"] .nav-item.active .nav-icon {
+  color: #222222;
+}
+
+html[data-appearance="notebook"] .panel-head {
+  border-bottom-color: #f0f0ec;
+}
+
+html[data-appearance="notebook"][data-theme="dark"] .panel-head {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+html[data-appearance="notebook"] .toolbar-module-icon,
+html[data-appearance="notebook"] .page-icon {
+  background: #f0f0ec;
+  color: #222222;
+}
+
+html[data-appearance="notebook"] .list-row:hover {
+  background: #f7f7f5;
+}
+
+/* 低饱和黑白灰界面，用红 / 蓝 / 绿点缀统计数字 */
+html[data-appearance="notebook"] .stat-card:nth-child(3n + 1) .num {
+  color: #d64045;
+}
+
+html[data-appearance="notebook"] .stat-card:nth-child(3n + 2) .num {
+  color: #3474b3;
+}
+
+html[data-appearance="notebook"] .stat-card:nth-child(3n) .num {
+  color: #388058;
+}
+
+html[data-appearance="notebook"] .kpi-value {
+  color: #3474b3;
+}
+
+html[data-appearance="notebook"] .kpi:nth-child(3n + 1) .kpi-value {
+  color: #d64045;
+}
+
+html[data-appearance="notebook"] .kpi:nth-child(3n) .kpi-value {
+  color: #388058;
+}
+
+html[data-appearance="notebook"] .overview-item:nth-child(1) strong {
+  color: #d64045;
+}
+
+html[data-appearance="notebook"] .overview-item:nth-child(3) strong {
+  color: #3474b3;
+}
+
+html[data-appearance="notebook"] .overview-item:nth-child(4) strong {
+  color: #388058;
+}
+
+html[data-appearance="notebook"] .nutrition-metric:nth-child(1) strong {
+  color: #d64045;
+}
+
+html[data-appearance="notebook"] .nutrition-metric:nth-child(2) strong {
+  color: #3474b3;
+}
+
+html[data-appearance="notebook"] .nutrition-metric:nth-child(3) strong {
+  color: #388058;
+}
+
+html[data-appearance="notebook"] .nutrition-metric:nth-child(4) strong {
+  color: #d64045;
+}
+
+html[data-appearance="notebook"] .nav-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: rgba(34, 34, 34, 0.05);
+  box-shadow: 0 1px 2px rgba(45, 44, 40, 0.06);
+  flex: 0 0 26px;
+}
+
+html[data-appearance="notebook"] .nav-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+html[data-appearance="notebook"] .nav-item.active .nav-icon {
+  background: rgba(34, 34, 34, 0.1);
+}
+
+/* ============ 硬边（Neo） ============ */
+html[data-appearance="neo"] {
+  --bg: #f2ede3;
+  --panel: #fffaf0;
+  --panel-soft: #e7dfd1;
+  --border: #20221f;
+  --text: #20221f;
+  --muted: #555951;
+  --faint: #75796f;
+  --accent: #d75d42;
+  --accent-deep: #ad422e;
+  --accent-soft: #f2c2b5;
+  --success: #20221f;
+  --success-soft: #d8d9cf;
+  --warning: #ad422e;
+  --warning-soft: #f2c2b5;
+  --danger: #ad422e;
+  --danger-soft: #f2c2b5;
+  --info: #687fa3;
+  --info-soft: #dce3ee;
+  --radius-card: 4px;
+  --radius-panel: 4px;
+  --radius-control: 4px;
+  --shadow-card: 5px 5px 0 #20221f;
+  --shadow-soft: 3px 3px 0 #20221f;
+}
+
+html[data-appearance="neo"] body {
+  background-color: #f2ede3;
+  background-image:
+    linear-gradient(rgba(32, 34, 31, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(32, 34, 31, 0.055) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+html[data-appearance="neo"][data-theme="dark"] {
+  --bg: #1e201d;
+  --panel: #292c27;
+  --panel-soft: #383b35;
+  --border: #f2ecdf;
+  --text: #f2ecdf;
+  --muted: #c1bbaf;
+  --faint: #918d84;
+  --accent: #df7056;
+  --accent-deep: #f08a70;
+  --accent-soft: #63382e;
+  --success: #f2ecdf;
+  --success-soft: #3a3d37;
+  --shadow-card: 5px 5px 0 #0f110f;
+  --shadow-soft: 3px 3px 0 #0f110f;
+}
+
+html[data-appearance="neo"][data-theme="dark"] body {
+  background-color: #1e201d;
+  background-image:
+    linear-gradient(rgba(242, 236, 223, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 236, 223, 0.05) 1px, transparent 1px);
+}
+
+html[data-appearance="neo"] .sidebar,
+html[data-appearance="neo"] .topbar {
+  background: #f2ede3;
+  border: 0;
+}
+
+html[data-appearance="neo"] .sidebar {
+  border-right: 2px solid #20221f;
+}
+
+html[data-appearance="neo"] .topbar {
+  border-bottom: 2px solid #20221f;
+}
+
+html[data-appearance="neo"][data-theme="dark"] .sidebar,
+html[data-appearance="neo"][data-theme="dark"] .topbar {
+  background: #1e201d;
+  border-color: #f2ecdf;
+}
+
+html[data-appearance="neo"] .panel,
+html[data-appearance="neo"] .stat-card,
+html[data-appearance="neo"] .account-card,
+html[data-appearance="neo"] .game-card,
+html[data-appearance="neo"] .fitness-plan-card,
+html[data-appearance="neo"] .campus-card,
+html[data-appearance="neo"] .media-card,
+html[data-appearance="neo"] .summary-card,
+html[data-appearance="neo"] .project-item,
+html[data-appearance="neo"] .search-result,
+html[data-appearance="neo"] .attention-row,
+html[data-appearance="neo"] .swatch,
+html[data-appearance="neo"] .kpi,
+html[data-appearance="neo"] .chart-card,
+html[data-appearance="neo"] .media-status-item,
+html[data-appearance="neo"] .modal,
+html[data-appearance="neo"] .toast {
+  background: #fffaf0;
+  border: 2px solid #20221f;
+  box-shadow: 5px 5px 0 #20221f;
+}
+
+html[data-appearance="neo"][data-theme="dark"] .panel,
+html[data-appearance="neo"][data-theme="dark"] .stat-card,
+html[data-appearance="neo"][data-theme="dark"] .account-card,
+html[data-appearance="neo"][data-theme="dark"] .game-card,
+html[data-appearance="neo"][data-theme="dark"] .fitness-plan-card,
+html[data-appearance="neo"][data-theme="dark"] .campus-card,
+html[data-appearance="neo"][data-theme="dark"] .media-card,
+html[data-appearance="neo"][data-theme="dark"] .summary-card,
+html[data-appearance="neo"][data-theme="dark"] .project-item,
+html[data-appearance="neo"][data-theme="dark"] .search-result,
+html[data-appearance="neo"][data-theme="dark"] .attention-row,
+html[data-appearance="neo"][data-theme="dark"] .swatch,
+html[data-appearance="neo"][data-theme="dark"] .kpi,
+html[data-appearance="neo"][data-theme="dark"] .chart-card,
+html[data-appearance="neo"][data-theme="dark"] .media-status-item,
+html[data-appearance="neo"][data-theme="dark"] .modal,
+html[data-appearance="neo"][data-theme="dark"] .toast {
+  background: #292c27;
+  border-color: #f2ecdf;
+  box-shadow: 5px 5px 0 #0f110f;
+}
+
+html[data-appearance="neo"] .btn {
+  border: 2px solid #20221f;
+  border-radius: 3px;
+  box-shadow: 3px 3px 0 #20221f;
+}
+
+html[data-appearance="neo"] .btn:active {
+  box-shadow: none;
+  background: #eadfd0;
+}
+
+html[data-appearance="neo"] .btn-primary {
+  background: #d75d42;
+  color: #fffaf0;
+}
+
+html[data-appearance="neo"][data-theme="dark"] .btn {
+  border-color: #f2ecdf;
+  box-shadow: 3px 3px 0 #0f110f;
+}
+
+html[data-appearance="neo"] .nav-item {
+  border: 2px solid transparent;
+}
+
+html[data-appearance="neo"] .nav-item.active {
+  background: var(--accent);
+  color: #fffaf0;
+  border: 2px solid #20221f;
+  box-shadow: 2px 2px 0 #20221f;
+}
+
+html[data-appearance="neo"] .nav-item.active .nav-icon {
+  color: #fffaf0;
+}
+
+html[data-appearance="neo"] .nav-label {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+html[data-appearance="neo"] .progress-fill {
+  background: var(--accent);
+}
+
+/* 平滑过渡 */
+body,
+.sidebar,
+.topbar,
+.panel,
+.btn,
+.modal,
+.stat-card,
+.kpi,
+.chart-card {
+  transition: background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, backdrop-filter 0.22s ease;
+}
+
+/* 主题色切换：放在外观变量之后，保证三种外观下都能生效 */
+html[data-accent="green"] {
+  --accent: #047857;
+  --accent-deep: #065f46;
+  --accent-soft: rgba(4, 120, 87, 0.14);
+}
+
+html[data-accent="purple"] {
+  --accent: #6d28d9;
+  --accent-deep: #5b21b6;
+  --accent-soft: rgba(109, 40, 217, 0.14);
+}
+
+html[data-accent="orange"] {
+  --accent: #c2410c;
+  --accent-deep: #9a3412;
+  --accent-soft: rgba(194, 65, 12, 0.14);
+}
+
+html[data-accent="green"][data-theme="dark"] {
+  --accent: #34d399;
+  --accent-deep: #6ee7b7;
+  --accent-soft: rgba(52, 211, 153, 0.16);
+}
+
+html[data-accent="purple"][data-theme="dark"] {
+  --accent: #a78bfa;
+  --accent-deep: #c4b5fd;
+  --accent-soft: rgba(167, 139, 250, 0.16);
+}
+
+html[data-accent="orange"][data-theme="dark"] {
+  --accent: #fb923c;
+  --accent-deep: #fdba74;
+  --accent-soft: rgba(251, 146, 60, 0.16);
+}
