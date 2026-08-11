@@ -243,6 +243,78 @@
     return true;
   }
 
+  function seedDemoData() {
+    const store = LifeApp.store;
+    const d = store.data;
+    if (d.notes.length || Object.keys(d.plans).length) return;
+    const today = store.todayKey();
+    d.notes.push({ id: store.uid(), text: '整理校招面试作品集', done: false, createdAt: new Date().toISOString() });
+    d.plans[today] = [
+      { id: store.uid(), title: '准备 AI 产品经理面试', time: '09:30', priority: 'high', source: 'campus', done: false, status: 'todo', estimatedMinutes: 60, notes: '复习项目数据流和架构' },
+      { id: store.uid(), title: '发布自媒体内容', time: '14:00', priority: 'medium', source: 'media', done: false, status: 'todo', estimatedMinutes: 45, notes: '本周复盘图文' },
+      { id: store.uid(), title: '完成健身训练', time: '19:30', priority: 'low', source: 'fitness', done: true, status: 'done', estimatedMinutes: 50, notes: '胸背训练' }
+    ];
+    d.media.contents.push(
+      { id: store.uid(), title: '本地应用开发记录', platform: '小红书', status: 'published', publishedAt: store.addDays(today, -1), views: 3200, likes: 260, comments: 42, copyText: '从需求到落地的本地应用' },
+      { id: store.uid(), title: 'AI 产品经理校招准备清单', platform: 'B站', status: 'producing', views: 0, likes: 0, comments: 0 },
+      { id: store.uid(), title: '效率工具对比', platform: '小红书', status: 'planning', views: 0, likes: 0, comments: 0 }
+    );
+    d.campus.records.push(
+      {
+        id: store.uid(), company: '某科技公司', position: 'AI 产品经理', appliedAt: store.addDays(today, -3),
+        status: 'interview', nextAction: '准备二面', deadline: store.addDays(today, 2),
+        timeline: [
+          { id: store.uid(), date: store.addDays(today, -3), stage: '已投递', note: '' },
+          { id: store.uid(), date: store.addDays(today, -1), stage: '一面', note: '项目深挖' }
+        ], note: ''
+      },
+      { id: store.uid(), company: '某互联网公司', position: '产品经理', appliedAt: store.addDays(today, -7), status: 'applied', nextAction: '等待笔试', deadline: '', timeline: [], note: '' }
+    );
+    d.product.projects.push({
+      id: store.uid(), name: '海星的工作生活', desc: '本地个人工作台', status: 'active',
+      requirements: [
+        { id: store.uid(), title: '本地文件存储', itemType: 'feature', priority: 'P0', status: 'done' },
+        { id: store.uid(), title: '回收站与自动备份', itemType: 'requirement', priority: 'P1', status: 'backlog' }
+      ],
+      milestones: [{ id: store.uid(), name: 'v1.0 完成', targetDate: '2026-08-31', status: 'done' }],
+      sprints: [],
+      todos: [
+        { id: store.uid(), text: '更新面试版 README', done: true },
+        { id: store.uid(), text: '录制演示视频', done: false }
+      ],
+      logs: [{ id: store.uid(), date: today, content: '完成 GitHub Pages 演示版' }]
+    });
+    d.fitness.plans.push({ id: store.uid(), name: '胸部训练', schedule: '周一', exercises: [{ id: store.uid(), name: '卧推', sets: 4, reps: 10, weight: 50, restSeconds: 90 }] });
+    d.fitness.metrics.push(
+      { id: store.uid(), date: store.addDays(today, -7), weight: 66, bodyFat: 18 },
+      { id: store.uid(), date: today, weight: 65.5, bodyFat: 17.5 }
+    );
+    d.diet.targets.push({ id: store.uid(), effectiveDate: today, calories: 1800, protein: 90, carbs: 200, fat: 60 });
+    d.diet.days.push({
+      id: store.uid(), date: today,
+      meals: [
+        { id: store.uid(), type: 'breakfast', food: '鸡蛋燕麦', calories: 350, protein: 25, carbs: 40, fat: 12, entryKind: 'actual' },
+        { id: store.uid(), type: 'lunch', food: '鸡胸肉沙拉', calories: 500, protein: 45, carbs: 30, fat: 18, entryKind: 'actual' }
+      ]
+    });
+    d.games.library.push({ id: store.uid(), name: '塞尔达传说', status: 'playing', activityType: 'game', progress: '主线第三章', nextGoal: '完成神庙挑战', rating: 9, review: '' });
+    d.games.sessions.push({ id: store.uid(), date: store.addDays(today, -1), gameId: d.games.library[0].id, minutes: 90, note: '' });
+    d.games.wishlist.push({ id: store.uid(), name: '星露谷物语', price: 48 });
+    store.save();
+  }
+
+  function handleDemoMode() {
+    const note = getEl('sidebar-storage-note');
+    const isStaticHost = window.location.protocol === 'https:' && window.location.hostname.indexOf('localhost') === -1;
+    if (note) note.textContent = isStaticHost ? '线上演示版，数据保存在当前浏览器' : '本地服务不可用，已降级浏览器存储';
+    if (new URLSearchParams(window.location.search).get('demo') === '1') {
+      seedDemoData();
+    }
+    applySettings();
+    renderNav();
+    switchTo(LifeApp.app.state.current);
+  }
+
   function initTopbar() {
     const dateEl = getEl('topbar-date');
     if (dateEl) {
@@ -327,6 +399,7 @@
   LifeApp.app.openSearch = openSearch;
   LifeApp.app.openQuickCreate = openQuickCreate;
   LifeApp.app.quickCreate = quickCreate;
+  LifeApp.app.seedDemoData = seedDemoData;
 
   document.addEventListener('DOMContentLoaded', function () {
     if (LifeApp.store) LifeApp.store.load();
@@ -335,14 +408,13 @@
     renderNav();
     switchTo('home');
     if (LifeApp.store.initRemote) {
+      document.addEventListener('lifeapp:demo-mode', handleDemoMode);
       LifeApp.store.initRemote().then(function () {
         applySettings();
         renderNav();
         switchTo(LifeApp.app.state.current);
         const note = getEl('sidebar-storage-note');
         if (note && LifeApp.store.isFileMode()) note.textContent = '数据保存在本地文件夹';
-      }).catch(function (err) {
-        LifeApp.ui.toast('数据文件读取失败：' + err.message);
       });
     }
   });

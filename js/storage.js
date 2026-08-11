@@ -63,6 +63,9 @@
 
   function detectApiBase() {
     if (typeof window === 'undefined') return null;
+    if (typeof URLSearchParams !== 'undefined' && new URLSearchParams(window.location.search).get('storage') === 'local') {
+      return null;
+    }
     const protocol = window.location.protocol;
     return protocol === 'http:' || protocol === 'https:' ? '' : null;
   }
@@ -71,30 +74,52 @@
     apiBase = detectApiBase();
     fileMode = apiBase !== null;
     if (!fileMode) return;
-    const res = await fetch(apiBase + '/api/data');
-    if (res.status === 404) {
-      let raw = null;
-      try {
-        raw = getBackend().getItem(STORAGE_KEY);
-      } catch (err) {
-        raw = null;
-      }
-      if (raw) {
+    try {
+      const res = await fetch(apiBase + '/api/data');
+      if (res.status === 404) {
+        const type = res.headers.get('content-type') || '';
+        if (!type.includes('application/json')) {
+          throw new Error('api-not-available');
+        }
+        let raw = null;
         try {
-          data = migrate(JSON.parse(raw));
+          raw = getBackend().getItem(STORAGE_KEY);
         } catch (err) {
+          raw = null;
+        }
+        if (raw) {
+          try {
+            data = migrate(JSON.parse(raw));
+          } catch (err) {
+            data = createDefaultData();
+          }
+        } else {
           data = createDefaultData();
         }
-      } else {
+        save();
+        return;
+      }
+      if (!res.ok) {
+        throw new Error('读取数据文件失败：HTTP ' + res.status);
+      }
+      data = migrate(await res.json());
+    } catch (err) {
+      fileMode = false;
+      apiBase = null;
+      try {
+        const raw = getBackend().getItem(STORAGE_KEY);
+        if (raw) {
+          data = migrate(JSON.parse(raw));
+        } else {
+          data = createDefaultData();
+        }
+      } catch (fallbackErr) {
         data = createDefaultData();
       }
-      save();
-      return;
+      if (typeof document !== 'undefined' && document.dispatchEvent) {
+        document.dispatchEvent(new CustomEvent('lifeapp:demo-mode', { detail: { message: err.message } }));
+      }
     }
-    if (!res.ok) {
-      throw new Error('读取数据文件失败：HTTP ' + res.status);
-    }
-    data = migrate(await res.json());
   }
 
   function createDefaultData() {
