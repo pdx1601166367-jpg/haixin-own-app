@@ -74,27 +74,6 @@ DEVELOPMENT_PLAN.md 开发计划
 OPTIMIZATION_NOTES.md 参考项目学习与优化记录
 ```
 
-## 发布到 GitHub
-
-```bash
-git init
-git add .
-git commit -m "初始化工作生活专属 App"
-git branch -M main
-git remote add origin https://github.com/<你的用户名>/<仓库名>.git
-git push -u origin main
-```
-
-提交前请检查：
-
-- `LICENSE` 中的版权信息替换为你的名字
-- 本地 git 作者信息使用你自己的 `user.name` 和 `user.email`
-- 不要在仓库中包含真实的个人数据备份文件
-
-## 致谢
-
-流光外观的壁纸素材来自 [TianyiDataScience/my-own-app](https://github.com/TianyiDataScience/my-own-app)，遵循 MIT 许可证，详见 `assets/ambient/CREDITS.md`。
-
 ## 许可证
 
 MIT License
