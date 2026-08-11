@@ -812,3 +812,22 @@ span[data-action="toggle-task"] {
     width: 140px;
   }
 }
+
+.campus-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.campus-card-head .list-row-main {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.campus-card-head .row-actions {
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
