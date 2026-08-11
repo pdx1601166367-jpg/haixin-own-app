@@ -141,16 +141,12 @@ server.js           本地服务（静态文件 + 数据文件 API）
 css/                全局样式、设计系统、三套外观
 js/                 存储层、通用组件、视图
 docs/screenshots/   演示截图
-assets/ambient/     流光外观壁纸素材
+assets/ambient/     流光外观背景资源
 tests/              单元与端到端测试
 PRD.md              产品需求文档
 DEVELOPMENT_PLAN.md 开发计划
 OPTIMIZATION_NOTES.md 参考学习与优化记录
 ```
-
-## 致谢
-
-流光外观壁纸素材来自 [TianyiDataScience/my-own-app](https://github.com/TianyiDataScience/my-own-app)，遵循 MIT 许可证，详见 `assets/ambient/CREDITS.md`。
 
 ## 许可证
 
