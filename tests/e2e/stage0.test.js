@@ -30,6 +30,11 @@ describe('阶段 0：项目骨架与导航', () => {
     assert.deepEqual(daily, ['首页总览', '今日计划']);
   });
 
+  it('品牌名显示为海星的工作生活', async () => {
+    await freshApp(page);
+    assert.equal(await page.locator('.brand-copy strong').textContent(), '海星的工作生活');
+  });
+
   it('默认进入首页总览且当前项高亮', async () => {
     await freshApp(page);
     assert.equal(await page.locator('#module-title').textContent(), '首页总览');
