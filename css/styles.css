@@ -186,6 +186,12 @@ body {
   background: var(--success-soft);
 }
 
+.save-indicator.error {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+
 .search-results {
   display: flex;
   flex-direction: column;

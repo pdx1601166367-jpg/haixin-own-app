@@ -13,6 +13,9 @@
   let data = null;
   let backend = null;
   let backendIsLocal = false;
+  let apiBase = null;
+  let fileMode = false;
+  let saveQueue = Promise.resolve();
 
   function getBackend() {
     if (backend) return backend;
@@ -37,8 +40,61 @@
   }
 
   function isPersistent() {
+    if (fileMode) return true;
     if (!backend) getBackend();
     return backendIsLocal;
+  }
+
+  function isFileMode() {
+    return fileMode;
+  }
+
+  function dispatchSaved() {
+    if (typeof document !== 'undefined' && document.dispatchEvent) {
+      document.dispatchEvent(new CustomEvent('lifeapp:saved', { detail: { at: data.updatedAt } }));
+    }
+  }
+
+  function dispatchSaveError(message) {
+    if (typeof document !== 'undefined' && document.dispatchEvent) {
+      document.dispatchEvent(new CustomEvent('lifeapp:save-error', { detail: { message: message } }));
+    }
+  }
+
+  function detectApiBase() {
+    if (typeof window === 'undefined') return null;
+    const protocol = window.location.protocol;
+    return protocol === 'http:' || protocol === 'https:' ? '' : null;
+  }
+
+  async function initRemote() {
+    apiBase = detectApiBase();
+    fileMode = apiBase !== null;
+    if (!fileMode) return;
+    const res = await fetch(apiBase + '/api/data');
+    if (res.status === 404) {
+      let raw = null;
+      try {
+        raw = getBackend().getItem(STORAGE_KEY);
+      } catch (err) {
+        raw = null;
+      }
+      if (raw) {
+        try {
+          data = migrate(JSON.parse(raw));
+        } catch (err) {
+          data = createDefaultData();
+        }
+      } else {
+        data = createDefaultData();
+      }
+      save();
+      return;
+    }
+    if (!res.ok) {
+      throw new Error('读取数据文件失败：HTTP ' + res.status);
+    }
+    data = migrate(await res.json());
   }
 
   function createDefaultData() {
@@ -110,6 +166,10 @@
   }
 
   function load() {
+    if (fileMode) {
+      if (!data) data = createDefaultData();
+      return data;
+    }
     const backend = getBackend();
     const raw = backend.getItem(STORAGE_KEY);
     if (!raw) {
@@ -128,9 +188,24 @@
   function save() {
     if (!data) data = createDefaultData();
     data.updatedAt = new Date().toISOString();
-    getBackend().setItem(STORAGE_KEY, JSON.stringify(data));
-    if (typeof document !== 'undefined' && document.dispatchEvent) {
-      document.dispatchEvent(new CustomEvent('lifeapp:saved', { detail: { at: data.updatedAt } }));
+    const serialized = JSON.stringify(data);
+    if (fileMode) {
+      const payload = serialized;
+      saveQueue = saveQueue.then(function () {
+        return fetch(apiBase + '/api/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload
+        }).then(function (res) {
+          if (!res.ok) throw new Error('保存失败：HTTP ' + res.status);
+          dispatchSaved();
+        });
+      }).catch(function (err) {
+        dispatchSaveError(err && err.message ? err.message : String(err));
+      });
+    } else {
+      getBackend().setItem(STORAGE_KEY, serialized);
+      dispatchSaved();
     }
     return data;
   }
@@ -336,7 +411,9 @@
     getModuleSummary: getModuleSummary,
     searchData: searchData,
     buildMonthDays: buildMonthDays,
-    isPersistent: isPersistent
+    isPersistent: isPersistent,
+    isFileMode: isFileMode,
+    initRemote: initRemote
   };
   Object.defineProperty(api, 'data', {
     get: function () {

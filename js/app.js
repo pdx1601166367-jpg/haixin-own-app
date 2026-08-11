@@ -250,9 +250,13 @@
     }
     const storageNote = getEl('sidebar-storage-note');
     if (storageNote) {
-      storageNote.textContent = LifeApp.store.isPersistent()
-        ? '本地数据，无需联网'
-        : '当前浏览器无法本地保存，建议使用 Chrome/Edge';
+      if (LifeApp.store.isFileMode()) {
+        storageNote.textContent = '数据保存在本地文件夹';
+      } else if (LifeApp.store.isPersistent()) {
+        storageNote.textContent = '本地数据，无需联网';
+      } else {
+        storageNote.textContent = '当前浏览器无法本地保存，建议使用 Chrome/Edge';
+      }
     }
     const searchBtn = getEl('global-search-btn');
     if (searchBtn) {
@@ -304,6 +308,15 @@
         indicator.classList.remove('saved');
       }, 1800);
     });
+    document.addEventListener('lifeapp:save-error', function (e) {
+      const indicator = getEl('save-indicator');
+      if (!indicator) return;
+      indicator.textContent = '保存失败';
+      indicator.classList.add('error');
+      const note = getEl('sidebar-storage-note');
+      if (note) note.textContent = '数据文件写入失败，请检查 data 目录权限';
+      LifeApp.ui.toast(e.detail && e.detail.message ? e.detail.message : '保存失败');
+    });
   }
 
   LifeApp.app.modules = MODULES;
@@ -321,5 +334,16 @@
     initTopbar();
     renderNav();
     switchTo('home');
+    if (LifeApp.store.initRemote) {
+      LifeApp.store.initRemote().then(function () {
+        applySettings();
+        renderNav();
+        switchTo(LifeApp.app.state.current);
+        const note = getEl('sidebar-storage-note');
+        if (note && LifeApp.store.isFileMode()) note.textContent = '数据保存在本地文件夹';
+      }).catch(function (err) {
+        LifeApp.ui.toast('数据文件读取失败：' + err.message);
+      });
+    }
   });
 })();
