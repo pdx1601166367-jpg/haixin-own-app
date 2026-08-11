@@ -246,11 +246,15 @@ html[data-appearance="notebook"] body {
   background: #f7f6f2;
 }
 
+html[data-appearance="notebook"][data-theme="dark"] body {
+  background: #191919;
+}
+
 html[data-appearance="notebook"][data-theme="dark"] {
   --bg: #191919;
-  --panel: rgba(31, 31, 31, 0.86);
-  --panel-soft: rgba(38, 38, 38, 0.72);
-  --border: rgba(255, 255, 255, 0.1);
+  --panel: #262626;
+  --panel-soft: #2e2e2e;
+  --border: rgba(255, 255, 255, 0.14);
   --text: rgba(255, 255, 255, 0.84);
   --muted: rgba(255, 255, 255, 0.58);
   --faint: rgba(255, 255, 255, 0.4);
@@ -265,7 +269,7 @@ html[data-appearance="notebook"][data-theme="dark"] {
   --danger-soft: #5d2826;
   --info: #69a6c8;
   --info-soft: #25465a;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.35);
 }
 
 html[data-appearance="notebook"] .sidebar {
@@ -285,13 +289,15 @@ html[data-appearance="notebook"] .topbar {
 }
 
 html[data-appearance="notebook"][data-theme="dark"] .sidebar {
-  background: #191919;
+  background: rgba(29, 29, 29, 0.9);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
   border-right-color: rgba(255, 255, 255, 0.1);
 }
 
 html[data-appearance="notebook"][data-theme="dark"] .topbar {
-  background: rgba(31, 31, 31, 0.95);
-  border-bottom-color: rgba(255, 255, 255, 0.1);
+  background: rgba(38, 38, 38, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.14);
 }
 
 html[data-appearance="notebook"] .panel,
@@ -335,8 +341,8 @@ html[data-appearance="notebook"][data-theme="dark"] .chart-card,
 html[data-appearance="notebook"][data-theme="dark"] .media-status-item,
 html[data-appearance="notebook"][data-theme="dark"] .modal,
 html[data-appearance="notebook"][data-theme="dark"] .toast {
-  background: rgba(31, 31, 31, 0.88);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: #262626;
+  border-color: rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(10px) saturate(120%);
   -webkit-backdrop-filter: blur(10px) saturate(120%);
 }
@@ -351,14 +357,25 @@ html[data-appearance="notebook"] .btn-primary:hover {
   background: #000000;
 }
 
+html[data-appearance="notebook"][data-theme="dark"] .btn-primary {
+  background: #f2f2ef;
+  border-color: #f2f2ef;
+  color: #1c1c1c;
+}
+
+html[data-appearance="notebook"][data-theme="dark"] .btn-primary:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+
 html[data-appearance="notebook"] .btn:not(.btn-primary) {
   background: #ffffff;
   border-color: #dcdcd8;
 }
 
 html[data-appearance="notebook"][data-theme="dark"] .btn:not(.btn-primary) {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 html[data-appearance="notebook"] .nav-item.active {
@@ -375,7 +392,7 @@ html[data-appearance="notebook"] .panel-head {
 }
 
 html[data-appearance="notebook"][data-theme="dark"] .panel-head {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
 }
 
 html[data-appearance="notebook"] .toolbar-module-icon,
