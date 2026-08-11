@@ -16,10 +16,10 @@
 
 ## 在线演示
 
-项目默认本地运行。部署到 GitHub Pages 后可直接体验静态演示版：
+项目默认本地运行，也可以直接体验 GitHub Pages 静态演示版：
 
-- 演示入口：`https://pdx1601166367-jpg.github.io/haixin-own-app/`
-- 带示例数据：`https://pdx1601166367-jpg.github.io/haixin-own-app/?demo=1`
+- [在线演示（空数据）](https://pdx1601166367-jpg.github.io/haixin-own-app/)
+- [在线演示（含示例数据）](https://pdx1601166367-jpg.github.io/haixin-own-app/?demo=1)
 
 线上为静态演示，数据保存在当前浏览器；完整版本地运行，数据写入 `data/app.json`。
 
